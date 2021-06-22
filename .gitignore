@@ -1,0 +1,12 @@
+#folders
+blender/
+printing/
+freecad/
+step/
+software/grbl-master/
+
+#vscode
+software/ScaraUno/.project
+software/ScaraUno/.vscode/
+
+
