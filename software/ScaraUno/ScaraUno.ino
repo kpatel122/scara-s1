@@ -30,14 +30,15 @@ enum ROBOT_STATE {
 };
 
 
-void pin_ISRZ() {Serial.print("z"); moving=false;}
+void pin_ISRZ() {Serial.print("z"); axisController.pGetAxis(2)->LimitHit();}
 
 void pin_ISRY() {Serial.print("y");moving=false;}
 
 void pin_ISRX() {
 
   Serial.print("x");
-  moving=false;
+  
+   
   
   /*
   for(int i=0;i<4;i++)
@@ -67,13 +68,23 @@ void setAxisParameters()
   }
 }
 
-void initAxis()
+void InitISR()
+{
+  pinMode(LIMIT_X, INPUT_PULLUP);
+  pinMode(LIMIT_Y, INPUT_PULLUP);
+  pinMode(LIMIT_Z, INPUT_PULLUP);
+  attachPCINT(digitalPinToPCINT(LIMIT_X), pin_ISRX, CHANGE);
+  attachPCINT(digitalPinToPCINT(LIMIT_Y), pin_ISRY, CHANGE);
+  attachPCINT(digitalPinToPCINT(LIMIT_Z), pin_ISRZ, CHANGE);
+}
+
+void InitAxis()
 {
   //create axis
-  axisController.AddAxis(0, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN) );
-  axisController.AddAxis(1, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN) );
-  axisController.AddAxis(2, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN) );
-  axisController.AddAxis(3, new Axis(STEPS, D_DIR, D_STEP,ENABLE_PIN) );
+  axisController.AddAxis(0, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,0,LIMIT_Y) );
+  axisController.AddAxis(1, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,0,LIMIT_X) );
+  axisController.AddAxis(2, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,0,LIMIT_Z) );
+  axisController.AddAxis(3, new Axis(STEPS, D_DIR, D_STEP,ENABLE_PIN,0,0) );
   
   //add axis to sync controller
   axisController.CreateSyncDriveController();
@@ -83,11 +94,22 @@ void initAxis()
 
 }
 
+void HomeAxis()
+{
+   while(axisController.pGetAxis(2)->GetHomingState() != HOME_STATE_RETRACT)
+   {
+     axisController.pGetAxis(2)->UpdateHoming();
+   }
+   Serial.println("Homing Finished");
+}
+
 void setup() {
 
   Serial.begin(115200);
 
-  initAxis();
+  InitAxis();
+  InitISR();
+  HomeAxis();
 }
 
 // the loop function runs over and over again forever
@@ -107,6 +129,7 @@ void loop() {
   }
 
 
+/*
 if(moving)
 {
 
@@ -119,6 +142,7 @@ axisController.pGetSyncDriver()->rotate(-Z_HEIGHT, -A_ANGLE,-B_ANGLE,-C_ANGLE);
 
 }
  
+ */
 
 
 }

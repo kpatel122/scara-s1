@@ -2,29 +2,47 @@
 #define AXIS_H
 #include <Arduino.h>
 #include "BasicStepperDriver.h"
+#include "PinChangeInterrupt.h"
 
-
+enum HOME_STATE
+{
+    HOME_STATE_NOT_HOMED, //initial state
+    HOME_STATE_FIRST_SEEK, //first pass to hit the limit switch
+    HOME_STATE_RETRACT, //retract after first hit
+    HOME_STATE_SECOND_SEEK,  //second pass 
+    HOME_STATE_HOMED,   //finished homing
+    HOME_STATE_ERROR // something went wrong
+};
 
 //single axis
 class Axis
 {
     public:
 
-        Axis(short steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin) : _basicStepperDriver(steps,dirPin , stepPin, enablePin){};
-
-        void Init(short steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, uint8_t homePin, int stepsPerDegree);
+        Axis(uint16_t steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, uint16_t stepsPerDegree, uint8_t homePin) 
+        : _basicStepperDriver(steps,dirPin , stepPin, enablePin){_homed=false; _stepsPerDegree=stepsPerDegree;  InitHoming(homePin);}
+ 
         float GetAngle() {return _currentAngle;}
         bool IsHomed(){return _homed;}
-        bool SetHomed(bool homeStatus){_homed = homeStatus;} 
+        bool SetHomed(bool homeStatus){_homed = homeStatus;}
+        
+        int Home();
+        void LimitISR();
+        void HomeISR();
+        void LimitHit();
+        HOME_STATE UpdateHoming();
+        HOME_STATE GetHomingState() {return _homeState;}
          
         BasicStepperDriver _basicStepperDriver; //should be private but an issue using the getter in sync driver is fixed by making it public
     private:
-        
+        void InitHoming(uint8_t homePin);
         short _stepsPerDegree;
         short _homePin;
         long _rotationProgress;
         float _currentAngle;
         bool _homed;
+        volatile HOME_STATE _homeState;
+        
          
 };
 
