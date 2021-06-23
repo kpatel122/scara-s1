@@ -30,7 +30,7 @@ enum ROBOT_STATE {
 };
 
 
-void pin_ISRZ() {Serial.print("z"); axisController.pGetAxis(2)->LimitHit();}
+void pin_ISRZ() { Serial.print("z"); axisController.pGetAxis(2)->LimitHit();}
 
 void pin_ISRY() {Serial.print("y");moving=false;}
 
@@ -38,19 +38,6 @@ void pin_ISRX() {
 
   Serial.print("x");
   
-   
-  
-  /*
-  for(int i=0;i<4;i++)
-  {
-    controller.getMotor(i).stop();  
- }
-
-  moving = false;
-  */
-  
-  //buttonState = digitalRead(buttonPin);
-  //digitalWrite(ledPin, buttonState);
 }
 
 int incomingByte = 0;
@@ -96,7 +83,7 @@ void InitAxis()
 
 void HomeAxis()
 {
-   while(axisController.pGetAxis(2)->GetHomingState() != HOME_STATE_RETRACT)
+   while(axisController.pGetAxis(2)->GetHomingState() != HOME_STATE_HOMED)
    {
      axisController.pGetAxis(2)->UpdateHoming();
    }

@@ -1,6 +1,7 @@
 #ifndef AXIS_H
 #define AXIS_H
 #include <Arduino.h>
+#include "Config.h"
 #include "BasicStepperDriver.h"
 #include "PinChangeInterrupt.h"
 
@@ -36,6 +37,7 @@ class Axis
         BasicStepperDriver _basicStepperDriver; //should be private but an issue using the getter in sync driver is fixed by making it public
     private:
         void InitHoming(uint8_t homePin);
+        void TransitionHomingState();
         short _stepsPerDegree;
         short _homePin;
         long _rotationProgress;

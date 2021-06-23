@@ -1,8 +1,6 @@
 #include "Axis.h"
 
- 
-
-void Axis::LimitHit()
+void Axis::TransitionHomingState() 
 {
     switch(_homeState)
     {
@@ -16,10 +14,16 @@ void Axis::LimitHit()
         
         case HOME_STATE_SECOND_SEEK:
         {
+            _basicStepperDriver.stop();
             _homeState = HOME_STATE_HOMED;
 
         }break; 
     }
+}
+
+void Axis::LimitHit()
+{
+    TransitionHomingState();
 }
 
 void Axis::InitHoming(uint8_t homePin)
@@ -27,11 +31,6 @@ void Axis::InitHoming(uint8_t homePin)
     _homePin = homePin;
     _homeState = HOME_STATE_NOT_HOMED;
     
-    
-    //Serial.print("Homing init pin ");
-    //Serial.println(_homePin);
-
-    //attachPCINT(digitalPinToPCINT(_homePin), pinISR, CHANGE);
 }
 
 HOME_STATE Axis::UpdateHoming()
@@ -41,21 +40,45 @@ HOME_STATE Axis::UpdateHoming()
         case HOME_STATE_NOT_HOMED: 
         {
             _homeState = HOME_STATE_FIRST_SEEK;
-            _basicStepperDriver.setRPM(10);
-             _basicStepperDriver.rotate(-360*2);
+            _basicStepperDriver.setRPM(HOME_FIRST_SEEK_RPM);
+             _basicStepperDriver.rotate(HOME_SEEK_DEG);
         }break;
         case HOME_STATE_FIRST_SEEK: 
         {
+            //end of first seek, setup retract
            
-            //delay(10);
+           
 
         }break;
         case HOME_STATE_RETRACT:
-        {}break;
+        {
+
+           
+               
+               _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
+               
+               
+               if(_basicStepperDriver.getStepsRemaining() == 0) //check if we have reached the end
+               {
+                  _homeState = HOME_STATE_SECOND_SEEK;
+                  Serial.println("Seek Finished!");
+                  _basicStepperDriver.setRPM(HOME_SECOND_SEEK_RPM);
+                  _basicStepperDriver.rotate(HOME_SEEK_DEG); //move back toward the limit switch slowly
+               }
+               
+            
+
+        }break;
         case HOME_STATE_SECOND_SEEK:
-        {}break; 
+        { 
+               //limit hit here is handled in the interupt function TransitionHomingState
+        }break; 
         case HOME_STATE_HOMED:
-        {}break;
+        {
+            _currentAngle = 0;
+            _homed = true;
+             
+        }break;
         case HOME_STATE_ERROR:
         {}break;
          

@@ -11,12 +11,18 @@
 #ifdef ARDUINO_AVR_UNO || ARDUINO_AVR_MEGA2560 
 #pragma message ("Using Board Arduino Uno or Mega" )
  
+#define NUM_AXIS 4
 
+//limit switched
 #define LIMIT_X 9 //grbl limit switch pins
 #define LIMIT_Y 10
 #define LIMIT_Z 11
 
-#define NUM_AXIS 4
+#define HOME_FIRST_SEEK_RPM 10 //firct pass to home
+#define HOME_SEEK_DEG -360*2 
+#define RETRACT_DISTANCE_DEG 50 //distance to retract after first home limit hit, setup for second seek
+#define HOME_SECOND_SEEK_RPM 5 //second slower pass to find final home
+
 
 #define STEPS 800
 
