@@ -16,9 +16,9 @@
 
 
 #define HOME_FIRST_SEEK_RPM 10 //firct pass to home
-#define HOME_SEEK_DEG -360*2 
+#define HOME_SEEK_DEG 360*2 
 #define RETRACT_DISTANCE_DEG 50 //distance to retract after first home limit hit, setup for second seek
-#define HOME_SECOND_SEEK_RPM 5 //second slower pass to find final home
+#define HOME_SECOND_SEEK_RPM 5 //second slower seek to find final home
 
 
 #define STEPS 800
@@ -42,6 +42,11 @@
 #define X_LIMIT 9 //grbl limit switch pins
 #define Y_LIMIT 10
 #define Z_LIMIT 11
+
+#define INVERT_Z_HOME 1 //0 for no inverse, 1 for invert
+#define INVERT_A_HOME 1
+#define INVERT_B_HOME 1
+#define INVERT_C_HOME 0
 
 
 #define X_STEP_BIT      2  // Uno Digital Pin 2

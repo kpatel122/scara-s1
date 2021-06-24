@@ -30,9 +30,9 @@ enum ROBOT_STATE {
 };
 
 
-void pin_ISRZ() { Serial.print("z"); }
+void pin_ISRZ() { axisController.pGetAxis(Z_AXIS)->LimitHit(); }
 
-void pin_ISRA() {Serial.print("a");}
+void pin_ISRA() {axisController.pGetAxis(A_AXIS)->LimitHit();}
 
 void pin_ISRB() { axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
@@ -70,10 +70,10 @@ void InitISR()
 void InitAxis()
 {
   //create axis
-  axisController.AddAxis(Z_AXIS, new Axis(STEPS, Z_DIR, Z_STEP,ENABLE_PIN,0,Z_AXIS_LIMIT) );
-  axisController.AddAxis(A_AXIS, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,0,A_AXIS_LIMIT) );
-  axisController.AddAxis(B_AXIS, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,0,B_AXIS_LIMIT) );
-  axisController.AddAxis(C_AXIS, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,0,C_AXIS_LIMIT) );
+  axisController.AddAxis(Z_AXIS, new Axis(STEPS, Z_DIR, Z_STEP,ENABLE_PIN,0,Z_AXIS_LIMIT,INVERT_Z_HOME) );
+  axisController.AddAxis(A_AXIS, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,0,A_AXIS_LIMIT,INVERT_A_HOME) );
+  axisController.AddAxis(B_AXIS, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,0,B_AXIS_LIMIT,INVERT_B_HOME) );
+  axisController.AddAxis(C_AXIS, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,0,C_AXIS_LIMIT,INVERT_C_HOME) );
   
   //add axis to sync controller
   axisController.CreateSyncDriveController();
@@ -98,6 +98,8 @@ void setup() {
 
   InitAxis();
   InitISR();
+  HomeAxis(Z_AXIS);
+  HomeAxis(A_AXIS);
   HomeAxis(B_AXIS);
   //int angle = 60;
   //axisController.pGetSyncDriver()->rotate(0,0,0,angle);
