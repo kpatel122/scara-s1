@@ -13,10 +13,7 @@
  
 #define NUM_AXIS 4
 
-//limit switched
-#define LIMIT_X 9 //grbl limit switch pins
-#define LIMIT_Y 10
-#define LIMIT_Z 11
+
 
 #define HOME_FIRST_SEEK_RPM 10 //firct pass to home
 #define HOME_SEEK_DEG -360*2 
@@ -35,6 +32,18 @@
 //pins for uno, taken from GRBL shield
 #define ENABLE_PIN 8
 
+//map grbl pins to joints
+#define Z_AXIS 0
+#define A_AXIS 1
+#define B_AXIS 2
+#define C_AXIS 3
+
+//limit switched
+#define X_LIMIT 9 //grbl limit switch pins
+#define Y_LIMIT 10
+#define Z_LIMIT 11
+
+
 #define X_STEP_BIT      2  // Uno Digital Pin 2
 #define Y_STEP_BIT      3  // Uno Digital Pin 3
 #define Z_STEP_BIT      4  // Uno Digital Pin 4
@@ -43,17 +52,25 @@
 #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
 #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
 
-#define A_STEP X_STEP_BIT   //maps to grbl x-axis
-#define A_DIR  X_DIRECTION_BIT
 
-#define B_STEP Y_STEP_BIT   //maps to grbl y-axis
-#define B_DIR  Y_DIRECTION_BIT
 
-#define C_STEP Z_STEP_BIT  //maps to grbl z-axis
-#define C_DIR  Z_DIRECTION_BIT
+//maps robot axis to grbl shield pins
+#define Z_STEP X_STEP_BIT   
+#define Z_DIR  X_DIRECTION_BIT
+#define Z_AXIS_LIMIT  Z_LIMIT //this is where the Z limit pin goes on the shield
 
-#define D_STEP  12  //maps to grbl shield 4th axis
-#define D_DIR 13  //Digital Pin 12 for Stepping signal and Digital Pin 13 as direction signal
+#define A_STEP Y_STEP_BIT   //maps to grbl y-axis
+#define A_DIR  Y_DIRECTION_BIT
+#define A_AXIS_LIMIT  Y_LIMIT //this is where the Y limit pin goes on the shield
+
+#define B_STEP Z_STEP_BIT  //maps to grbl z-axis
+#define B_DIR  Z_DIRECTION_BIT
+#define B_AXIS_LIMIT  X_LIMIT
+
+#define C_STEP  12  //maps to grbl shield 4th axis
+#define C_DIR 13  //Digital Pin 12 for Stepping signal and Digital Pin 13 as direction signal
+#define C_AXIS_LIMIT  0 //need to work this out
+
 
 #endif
 

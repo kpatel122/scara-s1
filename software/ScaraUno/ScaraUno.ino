@@ -30,15 +30,11 @@ enum ROBOT_STATE {
 };
 
 
-void pin_ISRZ() { Serial.print("z"); axisController.pGetAxis(2)->LimitHit();}
+void pin_ISRZ() { Serial.print("z"); }
 
-void pin_ISRY() {Serial.print("y");moving=false;}
+void pin_ISRA() {Serial.print("a");}
 
-void pin_ISRX() {
-
-  Serial.print("x");
-  
-}
+void pin_ISRB() { axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
 int incomingByte = 0;
 
@@ -57,21 +53,27 @@ void setAxisParameters()
 
 void InitISR()
 {
-  pinMode(LIMIT_X, INPUT_PULLUP);
-  pinMode(LIMIT_Y, INPUT_PULLUP);
-  pinMode(LIMIT_Z, INPUT_PULLUP);
-  attachPCINT(digitalPinToPCINT(LIMIT_X), pin_ISRX, CHANGE);
-  attachPCINT(digitalPinToPCINT(LIMIT_Y), pin_ISRY, CHANGE);
-  attachPCINT(digitalPinToPCINT(LIMIT_Z), pin_ISRZ, CHANGE);
+  pinMode(B_AXIS_LIMIT, INPUT_PULLUP);
+  pinMode(A_AXIS_LIMIT, INPUT_PULLUP);
+  pinMode(Z_AXIS_LIMIT, INPUT_PULLUP);
+  //todo add c axis
+  //pinMode(C_AXIS_LIMIT, INPUT_PULLUP);
+  //attachPCINT(digitalPinToPCINT(C_AXIS_LIMIT), pin_ISRC, CHANGE);
+ 
+
+
+  attachPCINT(digitalPinToPCINT(B_AXIS_LIMIT), pin_ISRB, CHANGE);
+  attachPCINT(digitalPinToPCINT(A_AXIS_LIMIT), pin_ISRA, CHANGE);
+  attachPCINT(digitalPinToPCINT(Z_AXIS_LIMIT), pin_ISRZ, CHANGE);
 }
 
 void InitAxis()
 {
   //create axis
-  axisController.AddAxis(0, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,0,LIMIT_Y) );
-  axisController.AddAxis(1, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,0,LIMIT_X) );
-  axisController.AddAxis(2, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,0,LIMIT_Z) );
-  axisController.AddAxis(3, new Axis(STEPS, D_DIR, D_STEP,ENABLE_PIN,0,0) );
+  axisController.AddAxis(Z_AXIS, new Axis(STEPS, Z_DIR, Z_STEP,ENABLE_PIN,0,Z_AXIS_LIMIT) );
+  axisController.AddAxis(A_AXIS, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,0,A_AXIS_LIMIT) );
+  axisController.AddAxis(B_AXIS, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,0,B_AXIS_LIMIT) );
+  axisController.AddAxis(C_AXIS, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,0,C_AXIS_LIMIT) );
   
   //add axis to sync controller
   axisController.CreateSyncDriveController();
@@ -81,11 +83,11 @@ void InitAxis()
 
 }
 
-void HomeAxis()
+void HomeAxis(uint8_t axis)
 {
-   while(axisController.pGetAxis(2)->GetHomingState() != HOME_STATE_HOMED)
+   while(axisController.pGetAxis(axis)->GetHomingState() != HOME_STATE_HOMED)
    {
-     axisController.pGetAxis(2)->UpdateHoming();
+     axisController.pGetAxis(axis)->UpdateHoming();
    }
    Serial.println("Homing Finished");
 }
@@ -96,7 +98,9 @@ void setup() {
 
   InitAxis();
   InitISR();
-  HomeAxis();
+  HomeAxis(B_AXIS);
+  //int angle = 60;
+  //axisController.pGetSyncDriver()->rotate(0,0,0,angle);
 }
 
 // the loop function runs over and over again forever
@@ -114,22 +118,5 @@ void loop() {
 
     
   }
-
-
-/*
-if(moving)
-{
-
-
-delay(1000);
-axisController.pGetSyncDriver()->rotate(Z_HEIGHT, A_ANGLE,B_ANGLE,C_ANGLE);
-delay(1000);
-axisController.pGetSyncDriver()->rotate(-Z_HEIGHT, -A_ANGLE,-B_ANGLE,-C_ANGLE);
-
-
-}
- 
- */
-
 
 }
