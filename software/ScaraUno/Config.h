@@ -76,6 +76,20 @@
 #define C_DIR 13  //Digital Pin 12 for Stepping signal and Digital Pin 13 as direction signal
 #define C_AXIS_LIMIT  0 //need to work this out
 
+//motor steps calculations
+#define A_MOTOR_GEAR_RATIO ((float)20/ (float)130)  //motor pulley / idle pulley
+#define A_MOTOR_MICROSTEPS 16
+#define A_MOTOR_STEP_DEGREE 1.8
+
+#define B_MOTOR_GEAR_RATIO ((float)16/ (float)60)  //C has same ratio
+#define B_MOTOR_MICROSTEPS 16
+#define B_MOTOR_STEP_DEGREE 1.8
+
+//calculate how many steps needed to move 1 degree based on gear ratios and microsteps
+#define A_STEPS_PER_DEGREE (float)(1 / ((float)A_MOTOR_GEAR_RATIO * ((float)A_MOTOR_STEP_DEGREE / (float)A_MOTOR_MICROSTEPS)))
+#define B_STEPS_PER_DEGREE (float)(1 / ((float)B_MOTOR_GEAR_RATIO * ((float)B_MOTOR_STEP_DEGREE / (float)B_MOTOR_MICROSTEPS)))
+#define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE
+#define Z_STEPS_PER_MM 10
 
 #endif
 
