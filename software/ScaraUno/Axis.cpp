@@ -3,14 +3,17 @@
 
 void Axis::TransitionHomingState() 
 {
+    
+    
     switch(_homeState)
     {
          
         case HOME_STATE_FIRST_SEEK: 
         {
-            _homeState = HOME_STATE_RETRACT;
-            //_basicStepperDriver.startBrake();
             _basicStepperDriver.stop();
+            _homeState = HOME_STATE_RETRACT;
+             
+            
         }break;
         
         case HOME_STATE_SECOND_SEEK:
@@ -56,17 +59,22 @@ HOME_STATE Axis::UpdateHoming()
         {
 
            
-               
-               _invertHomingDir ?  _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG) : _basicStepperDriver.rotate(-RETRACT_DISTANCE_DEG); 
+               _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
+               //_invertHomingDir ?  _basicStepperDriver.rotate(-RETRACT_DISTANCE_DEG) : _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
                
                
                if(_basicStepperDriver.getStepsRemaining() == 0) //check if we have reached the end
                {
+                   
                   _homeState = HOME_STATE_SECOND_SEEK;
                   Serial.println("Seek Finished!");
                   _basicStepperDriver.setRPM(HOME_SECOND_SEEK_RPM);
-                  _invertHomingDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);//move back toward the limit switch slowly
+                  //_invertHomingDir ? _basicStepperDriver.rotate(HOME_SEEK_DEG) : _basicStepperDriver.rotate(-HOME_SEEK_DEG);//move back toward the limit switch slowly
+                    _basicStepperDriver.rotate(HOME_SEEK_DEG);   
+               
+               
                }
+               
                
             
 
@@ -77,6 +85,7 @@ HOME_STATE Axis::UpdateHoming()
         }break; 
         case HOME_STATE_HOMED:
         {
+            _basicStepperDriver.setRPM(RPM); //reset regular speed;
             _currentAngle = 0;
             _homed = true;
              

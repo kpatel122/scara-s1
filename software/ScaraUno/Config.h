@@ -15,8 +15,8 @@
 
 
 
-#define HOME_FIRST_SEEK_RPM 10 //firct pass to home
-#define HOME_SEEK_DEG 360*2 
+#define HOME_FIRST_SEEK_RPM 10 //first pass to home
+#define HOME_SEEK_DEG -360*2 
 #define RETRACT_DISTANCE_DEG 50 //distance to retract after first home limit hit, setup for second seek
 #define HOME_SECOND_SEEK_RPM 5 //second slower seek to find final home
 
@@ -24,7 +24,7 @@
 #define STEPS 800
 
 #define MICROSTEPS 4
-#define RPM 100
+#define RPM 20
 
 #define ACCL 2000
 #define DECL 2000
@@ -43,9 +43,9 @@
 #define Y_LIMIT 10
 #define Z_LIMIT 11
 
-#define INVERT_Z_HOME 1 //0 for no inverse, 1 for invert
-#define INVERT_A_HOME 1
-#define INVERT_B_HOME 1
+#define INVERT_Z_HOME 0 //0 for no inverse, 1 for invert
+#define INVERT_A_HOME 0
+#define INVERT_B_HOME 0
 #define INVERT_C_HOME 0
 
 
@@ -57,9 +57,7 @@
 #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
 #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
 
-
-
-//maps robot axis to grbl shield pins
+//maps stepper pin entry to grbl shield pins
 #define Z_STEP X_STEP_BIT   
 #define Z_DIR  X_DIRECTION_BIT
 #define Z_AXIS_LIMIT  Z_LIMIT //this is where the Z limit pin goes on the shield

@@ -25,7 +25,7 @@ enum ROBOT_STATE {
 
 void pin_ISRZ() { axisController.pGetAxis(Z_AXIS)->LimitHit(); }
 
-void pin_ISRA() {axisController.pGetAxis(A_AXIS)->LimitHit();}
+void pin_ISRA() { Serial.println("A_AXIS"); axisController.pGetAxis(A_AXIS)->LimitHit();}
 
 void pin_ISRB() { axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
@@ -91,7 +91,10 @@ void setup() {
 
   InitAxis();
   InitISR();
-
+  HomeAxis(B_AXIS);
+  HomeAxis(A_AXIS);
+  
+  
 
   int degrees = 90; 
 
