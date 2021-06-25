@@ -43,10 +43,10 @@
 #define Y_LIMIT 10
 #define Z_LIMIT 11
 
-#define INVERT_Z_HOME 0 //0 for no inverse, 1 for invert
-#define INVERT_A_HOME 0
-#define INVERT_B_HOME 0
-#define INVERT_C_HOME 0
+#define INVERT_Z 0 //0 for no inverse, 1 for invert
+#define INVERT_A 0
+#define INVERT_B 1
+#define INVERT_C 0
 
 
 #define X_STEP_BIT      2  // Uno Digital Pin 2

@@ -30,11 +30,11 @@ void Axis::LimitHit()
     TransitionHomingState();
 }
 
-void Axis::InitHoming(uint8_t homePin, bool invertHomingDir)
+void Axis::InitHoming(uint8_t homePin, bool invertDir)
 {
     _homePin = homePin;
     _homeState = HOME_STATE_NOT_HOMED;
-    _invertHomingDir = invertHomingDir;
+    _invertDir = invertDir;
     
 }
 
@@ -46,7 +46,7 @@ HOME_STATE Axis::UpdateHoming()
         {
             _homeState = HOME_STATE_FIRST_SEEK;
             _basicStepperDriver.setRPM(HOME_FIRST_SEEK_RPM);
-             _invertHomingDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);
+             _invertDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);
         }break;
         case HOME_STATE_FIRST_SEEK: 
         {
@@ -59,8 +59,8 @@ HOME_STATE Axis::UpdateHoming()
         {
 
            
-               _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
-               //_invertHomingDir ?  _basicStepperDriver.rotate(-RETRACT_DISTANCE_DEG) : _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
+               _invertDir ? _basicStepperDriver.rotate(-RETRACT_DISTANCE_DEG) : _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
+                
                
                
                if(_basicStepperDriver.getStepsRemaining() == 0) //check if we have reached the end
@@ -69,8 +69,9 @@ HOME_STATE Axis::UpdateHoming()
                   _homeState = HOME_STATE_SECOND_SEEK;
                   Serial.println("Seek Finished!");
                   _basicStepperDriver.setRPM(HOME_SECOND_SEEK_RPM);
-                  //_invertHomingDir ? _basicStepperDriver.rotate(HOME_SEEK_DEG) : _basicStepperDriver.rotate(-HOME_SEEK_DEG);//move back toward the limit switch slowly
-                    _basicStepperDriver.rotate(HOME_SEEK_DEG);   
+                  _invertDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);//move back toward the limit switch slowly
+                     
+                //_basicStepperDriver.rotate(HOME_SEEK_DEG);   
                
                
                }

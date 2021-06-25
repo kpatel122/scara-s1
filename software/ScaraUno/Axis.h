@@ -20,8 +20,8 @@ class Axis
 {
     public:
 
-        Axis(uint16_t steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, float stepsPerDegree, uint8_t homePin, bool invertHomingDir ) 
-        : _basicStepperDriver(steps,dirPin , stepPin, enablePin){_homed=false; _stepsPerDegree=stepsPerDegree;  InitHoming(homePin, invertHomingDir);}
+        Axis(uint16_t steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, float stepsPerDegree, uint8_t homePin, bool invertDir ) 
+        : _basicStepperDriver(steps,dirPin , stepPin, enablePin){_homed=false; _stepsPerDegree=stepsPerDegree;  InitHoming(homePin, invertDir);}
  
         float GetAngle() {return _currentAngle;}
         float GetStepsPerDegree() {return _stepsPerDegree;}
@@ -44,7 +44,7 @@ class Axis
         long _rotationProgress;
         float _currentAngle;
         bool _homed;
-        bool _invertHomingDir;
+        bool _invertDir;
         volatile HOME_STATE _homeState; //changed from imit switch ISR
         
          
