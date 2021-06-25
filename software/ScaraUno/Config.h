@@ -15,9 +15,9 @@
 
 
 
-#define HOME_FIRST_SEEK_RPM 10 //first pass to home
-#define HOME_SEEK_DEG -360*2 
-#define RETRACT_DISTANCE_DEG 50 //distance to retract after first home limit hit, setup for second seek
+#define HOME_FIRST_SEEK_RPM 20 //first pass to home
+#define HOME_SEEK_DEG -400 
+#define RETRACT_DISTANCE_DEG 10 //distance to retract after first home limit hit, setup for second seek
 #define HOME_SECOND_SEEK_RPM 5 //second slower seek to find final home
 
 
@@ -39,25 +39,25 @@
 #define C_AXIS 3
 
 //limit switched
-#define X_LIMIT 9 //grbl limit switch pins
+#define X_LIMIT 9 //grbl shield limit switch pins
 #define Y_LIMIT 10
 #define Z_LIMIT 11
 
 #define INVERT_Z 0 //0 for no inverse, 1 for invert
 #define INVERT_A 0
-#define INVERT_B 1
+#define INVERT_B 0
 #define INVERT_C 0
 
 
-#define X_STEP_BIT      2  // Uno Digital Pin 2
+#define X_STEP_BIT      2  // Uno Digital Pin 2 as defined by grbl cnc shield
 #define Y_STEP_BIT      3  // Uno Digital Pin 3
 #define Z_STEP_BIT      4  // Uno Digital Pin 4
 
-#define X_DIRECTION_BIT   5  // Uno Digital Pin 5
+#define X_DIRECTION_BIT   5  // Uno Digital Pin 5 as defined by grbl cnc shield
 #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
 #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
 
-//maps stepper pin entry to grbl shield pins
+//maps stepper pin entry to grbl cnc shield pins
 #define Z_STEP X_STEP_BIT   
 #define Z_DIR  X_DIRECTION_BIT
 #define Z_AXIS_LIMIT  Z_LIMIT //this is where the Z limit pin goes on the shield
@@ -87,7 +87,7 @@
 #define A_STEPS_PER_DEGREE (float)(1 / ((float)A_MOTOR_GEAR_RATIO * ((float)A_MOTOR_STEP_DEGREE / (float)A_MOTOR_MICROSTEPS)))
 #define B_STEPS_PER_DEGREE (float)(1 / ((float)B_MOTOR_GEAR_RATIO * ((float)B_MOTOR_STEP_DEGREE / (float)B_MOTOR_MICROSTEPS)))
 #define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE
-#define Z_STEPS_PER_MM 10
+#define Z_STEPS_PER_MM 400
 
 #endif
 

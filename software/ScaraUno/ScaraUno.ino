@@ -6,14 +6,6 @@
 #include "AxisController.h"
 #include "PinChangeInterrupt.h"
 
-//steps needs to be configured
-
-
-
-
-
-
-
 AxisController axisController;
 
 enum ROBOT_STATE {
@@ -63,7 +55,7 @@ void InitISR()
 void InitAxis()
 {
   //create axis
-  axisController.AddAxis(Z_AXIS, new Axis(STEPS, Z_DIR, Z_STEP,ENABLE_PIN,0,Z_AXIS_LIMIT,INVERT_Z) );
+  axisController.AddAxis(Z_AXIS, new Axis(STEPS, Z_DIR, Z_STEP,ENABLE_PIN,Z_STEPS_PER_MM,Z_AXIS_LIMIT,INVERT_Z) );
   axisController.AddAxis(A_AXIS, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,A_STEPS_PER_DEGREE,A_AXIS_LIMIT,INVERT_A) );
   axisController.AddAxis(B_AXIS, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,B_STEPS_PER_DEGREE,B_AXIS_LIMIT,INVERT_B) );
   axisController.AddAxis(C_AXIS, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,C_STEPS_PER_DEGREE,C_AXIS_LIMIT,INVERT_C) );
@@ -82,7 +74,7 @@ void HomeAxis(uint8_t axis)
    {
      axisController.pGetAxis(axis)->UpdateHoming();
    }
-   Serial.println("Homing Finished");
+    
 }
 
 void setup() {
@@ -91,14 +83,21 @@ void setup() {
 
   InitAxis();
   InitISR();
+  HomeAxis(Z_AXIS);
   HomeAxis(B_AXIS);
   HomeAxis(A_AXIS);
   
   
 
-  int degrees = 90; 
+  int degrees = 90;
+  int mm = 50; 
 
-  axisController.Move(0,degrees,degrees,0);
+
+  //axisController.pGetAxis(Z_AXIS)->Move(-mm);
+  
+  //axisController.pGetAxis(A_AXIS)->_basicStepperDriver.setRPM(50);
+  //axisController.pGetAxis(B_AXIS)->_basicStepperDriver.setRPM(50);
+  axisController.Move(mm,degrees,degrees,0);
 
 }
 

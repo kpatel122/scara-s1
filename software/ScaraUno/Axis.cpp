@@ -1,5 +1,9 @@
 #include "Axis.h"
 
+void Axis::Move(long distance)
+{
+    _basicStepperDriver.move(distance * _stepsPerDegree); //steps per degree means stepsPerMM for lead screws
+}
 
 void Axis::TransitionHomingState() 
 {
@@ -20,6 +24,11 @@ void Axis::TransitionHomingState()
         {
             _basicStepperDriver.stop();
             _homeState = HOME_STATE_HOMED;
+
+            Serial.println("Setting RPM");
+            _basicStepperDriver.setRPM(50); //reset regular speed;
+            _currentAngle = 0;
+            _homed = true;
 
         }break; 
     }
@@ -45,8 +54,8 @@ HOME_STATE Axis::UpdateHoming()
         case HOME_STATE_NOT_HOMED: 
         {
             _homeState = HOME_STATE_FIRST_SEEK;
-            _basicStepperDriver.setRPM(HOME_FIRST_SEEK_RPM);
-             _invertDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);
+            _basicStepperDriver.setRPM(HOME_FIRST_SEEK_RPM*2);
+             _invertDir ? Move(-HOME_SEEK_DEG) : Move(HOME_SEEK_DEG);//_basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);
         }break;
         case HOME_STATE_FIRST_SEEK: 
         {
@@ -59,7 +68,7 @@ HOME_STATE Axis::UpdateHoming()
         {
 
            
-               _invertDir ? _basicStepperDriver.rotate(-RETRACT_DISTANCE_DEG) : _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
+               _invertDir ? Move(-RETRACT_DISTANCE_DEG) : Move(RETRACT_DISTANCE_DEG);//_basicStepperDriver.rotate(-RETRACT_DISTANCE_DEG) : _basicStepperDriver.rotate(RETRACT_DISTANCE_DEG); 
                 
                
                
@@ -69,8 +78,12 @@ HOME_STATE Axis::UpdateHoming()
                   _homeState = HOME_STATE_SECOND_SEEK;
                   Serial.println("Seek Finished!");
                   _basicStepperDriver.setRPM(HOME_SECOND_SEEK_RPM);
-                  _invertDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);//move back toward the limit switch slowly
-                     
+                  
+                  
+                  //_invertDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);//move back toward the limit switch slowly
+                    _invertDir ? Move(-HOME_SEEK_DEG) : Move(HOME_SEEK_DEG);
+
+
                 //_basicStepperDriver.rotate(HOME_SEEK_DEG);   
                
                
@@ -86,9 +99,7 @@ HOME_STATE Axis::UpdateHoming()
         }break; 
         case HOME_STATE_HOMED:
         {
-            _basicStepperDriver.setRPM(RPM); //reset regular speed;
-            _currentAngle = 0;
-            _homed = true;
+            
              
         }break;
         case HOME_STATE_ERROR:

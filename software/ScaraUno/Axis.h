@@ -32,6 +32,8 @@ class Axis
         void LimitISR();
         void HomeISR();
         void LimitHit();
+        void Move(long distance);
+
         HOME_STATE UpdateHoming();
         HOME_STATE GetHomingState() {return _homeState;}
          
