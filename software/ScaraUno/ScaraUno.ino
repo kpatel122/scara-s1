@@ -8,40 +8,11 @@
 
 //steps needs to be configured
 
-#define JOINT_A 0
-#define JOINT_B 1
-#define JOINT_C 2
-#define JOINT_D 3
-
-float current_angle;
-#define Z_HEIGHT 0
-#define A_ANGLE 60
-#define B_ANGLE 0
-#define C_ANGLE 0
-
-volatile bool moving = true;
-
-int motorPulley = 16;
-int largePulley = 60;
-int microSteps = 16;
-float degPerStep = 1.8;
-
-int AxisPulleyMotor = 20;
-int AxisPulleylargePulley = 130;
 
 
-float gearRatio = (float)motorPulley / (float)largePulley;
 
-float interim = (float)degPerStep / (float)microSteps;
 
-float StepsPerDegree = (float)(1 / ((float)gearRatio * ((float)degPerStep / (float)microSteps)));
 
-float GetStepsPerDegree(int MotorPulleyTeeth, int LargePulleyTeeth,int DegreePerStep,int MicroSteps)
-{
-  float GearRatio = ((float)MotorPulleyTeeth / (float)LargePulleyTeeth);
-  StepsPerDegree = (float)(1 / ((float)GearRatio * ((float)DegreePerStep / (float)MicroSteps)));
-  return StepsPerDegree;
-}
 
 AxisController axisController;
 
@@ -118,36 +89,14 @@ void setup() {
 
   Serial.begin(115200);
 
-  Serial.print("gearRatio ");
-  Serial.println(gearRatio);
-
-  Serial.print("interim ");
-  Serial.println(interim);
-
-  Serial.print("StepsPerDegree ");
-  Serial.println(StepsPerDegree);
-
-  Serial.print("B_STEPS_PER_DEGREE ");
-  Serial.println(B_STEPS_PER_DEGREE);
-
-  Serial.print("A_STEPS_PER_DEGREE ");
-  Serial.println(A_STEPS_PER_DEGREE);
-
   InitAxis();
   InitISR();
-  
-  //HomeAxis(Z_AXIS);
-  //HomeAxis(A_AXIS);
-  //HomeAxis(B_AXIS);
+
 
   int degrees = 90; 
-  
-  //axisController.pGetAxis(B_AXIS)->_basicStepperDriver.move(degrees * StepsPerDegree);
 
   axisController.Move(0,degrees,degrees,0);
 
-  //int angle = 60;
-  //axisController.pGetSyncDriver()->rotate(0,0,0,angle);
 }
 
 // the loop function runs over and over again forever
