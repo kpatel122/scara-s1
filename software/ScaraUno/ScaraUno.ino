@@ -54,18 +54,18 @@ void InitISR()
 
 void InitAxis()
 {
+
   //create axis
-  axisController.AddAxis(Z_AXIS, new Axis(STEPS, Z_DIR, Z_STEP,ENABLE_PIN,Z_STEPS_PER_MM,Z_AXIS_LIMIT,INVERT_Z) );
-  axisController.AddAxis(A_AXIS, new Axis(STEPS, A_DIR, A_STEP,ENABLE_PIN,A_STEPS_PER_DEGREE,A_AXIS_LIMIT,INVERT_A) );
-  axisController.AddAxis(B_AXIS, new Axis(STEPS, B_DIR, B_STEP,ENABLE_PIN,B_STEPS_PER_DEGREE,B_AXIS_LIMIT,INVERT_B) );
-  axisController.AddAxis(C_AXIS, new Axis(STEPS, C_DIR, C_STEP,ENABLE_PIN,C_STEPS_PER_DEGREE,C_AXIS_LIMIT,INVERT_C) );
+  axisController.AddAxis(Z_AXIS, new Axis(Z_STEPS, Z_DIR, Z_STEP,ENABLE_PIN,Z_STEPS_PER_MM,Z_AXIS_LIMIT,INVERT_Z) );
+  axisController.AddAxis(A_AXIS, new Axis(A_STEPS, A_DIR, A_STEP,ENABLE_PIN,A_STEPS_PER_DEGREE,A_AXIS_LIMIT,INVERT_A) );
+  axisController.AddAxis(B_AXIS, new Axis(B_STEPS, B_DIR, B_STEP,ENABLE_PIN,B_STEPS_PER_DEGREE,B_AXIS_LIMIT,INVERT_B) );
+  axisController.AddAxis(C_AXIS, new Axis(C_STEPS, C_DIR, C_STEP,ENABLE_PIN,C_STEPS_PER_DEGREE,C_AXIS_LIMIT,INVERT_C) );
   
   //add axis to sync controller
   axisController.CreateSyncDriveController();
 
   //set axis parameters
   setAxisParameters();
-
 }
 
 void HomeAxis(uint8_t axis)
@@ -83,17 +83,28 @@ void setup() {
 
   InitAxis();
   InitISR();
-  HomeAxis(Z_AXIS);
+
+  //HomeAxis(Z_AXIS);
   HomeAxis(B_AXIS);
   HomeAxis(A_AXIS);
+
+ 
   
+  Serial.print("A_STEPS_PER_DEGREE ");
+  Serial.println(A_STEPS_PER_DEGREE);
   
 
   int degrees = 90;
-  int mm = 50; 
+  int mm = 0; 
+
+  //axisController.pGetAxis(A_AXIS)->_basicStepperDriver.rotate(degrees);
+  
+  //axisController.pGetAxis(Z_AXIS)->_basicStepperDriver.setRPM(5);
+  //axisController.pGetAxis(Z_AXIS)->Move(mm);
+  //axisController.pGetAxis(A_AXIS)->Move(degrees);
+  //axisController.pGetAxis(B_AXIS)->Move(degrees);
 
 
-  //axisController.pGetAxis(Z_AXIS)->Move(-mm);
   
   //axisController.pGetAxis(A_AXIS)->_basicStepperDriver.setRPM(50);
   //axisController.pGetAxis(B_AXIS)->_basicStepperDriver.setRPM(50);

@@ -15,16 +15,17 @@
 
 
 
-#define HOME_FIRST_SEEK_RPM 20 //first pass to home
+#define HOME_FIRST_SEEK_RPM 5 //first pass to home
 #define HOME_SEEK_DEG -400 
 #define RETRACT_DISTANCE_DEG 10 //distance to retract after first home limit hit, setup for second seek
-#define HOME_SECOND_SEEK_RPM 5 //second slower seek to find final home
+#define HOME_SECOND_SEEK_RPM 2 //second slower seek to find final home
 
 
-#define STEPS 800
+ 
+ 
 
-#define MICROSTEPS 4
-#define RPM 20
+#define MICROSTEPS 16
+#define RPM 10
 
 #define ACCL 2000
 #define DECL 2000
@@ -81,13 +82,24 @@
 
 #define B_MOTOR_GEAR_RATIO ((float)16/ (float)60)  //C has same ratio
 #define B_MOTOR_MICROSTEPS 16
-#define B_MOTOR_STEP_DEGREE 1.8
+#define B_MOTOR_STEP_DEGREE ((float)1.8)
+
+
+#define Z_STEPS_PER_MM 400
+
+//how many steps needed for a full revolution
+#define Z_STEPS Z_STEPS_PER_MM
+#define A_STEPS ((float)(200 / (float)A_MOTOR_GEAR_RATIO))//(360 * A_STEPS_PER_DEGREE)
+#define B_STEPS ((float)(200 / (float)B_MOTOR_GEAR_RATIO)) //(360 * B_STEPS_PER_DEGREE)
+#define C_STEPS B_STEPS
+
 
 //calculate how many steps needed to move 1 degree based on gear ratios and microsteps
 #define A_STEPS_PER_DEGREE (float)(1 / ((float)A_MOTOR_GEAR_RATIO * ((float)A_MOTOR_STEP_DEGREE / (float)A_MOTOR_MICROSTEPS)))
+
 #define B_STEPS_PER_DEGREE (float)(1 / ((float)B_MOTOR_GEAR_RATIO * ((float)B_MOTOR_STEP_DEGREE / (float)B_MOTOR_MICROSTEPS)))
-#define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE
-#define Z_STEPS_PER_MM 400
+
+#define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE //same ratio
 
 #endif
 

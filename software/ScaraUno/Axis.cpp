@@ -3,6 +3,7 @@
 void Axis::Move(long distance)
 {
     _basicStepperDriver.move(distance * _stepsPerDegree); //steps per degree means stepsPerMM for lead screws
+    //_basicStepperDriver.rotate(distance);
 }
 
 void Axis::TransitionHomingState() 
@@ -54,7 +55,7 @@ HOME_STATE Axis::UpdateHoming()
         case HOME_STATE_NOT_HOMED: 
         {
             _homeState = HOME_STATE_FIRST_SEEK;
-            _basicStepperDriver.setRPM(HOME_FIRST_SEEK_RPM*2);
+            _basicStepperDriver.setRPM(HOME_FIRST_SEEK_RPM);
              _invertDir ? Move(-HOME_SEEK_DEG) : Move(HOME_SEEK_DEG);//_basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);
         }break;
         case HOME_STATE_FIRST_SEEK: 

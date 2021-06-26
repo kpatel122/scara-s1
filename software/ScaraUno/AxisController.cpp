@@ -2,10 +2,20 @@
 
 void AxisController::Move(long mmZ,long degreesA,long degreesB,long degreesC)
 {
+    
+    
     _pSyncDriveController->move(mmZ * _pAxis[Z_AXIS]->GetStepsPerDegree(),
                              degreesA * _pAxis[A_AXIS]->GetStepsPerDegree(),
                              degreesB * _pAxis[B_AXIS]->GetStepsPerDegree(),
                              degreesC * _pAxis[C_AXIS]->GetStepsPerDegree());
+    
+
+   /*
+   _pSyncDriveController->rotate(mmZ,
+                             degreesA,
+                             degreesB,
+                             degreesC);
+    */
 }
 
 int AxisController::CreateSyncDriveController()
