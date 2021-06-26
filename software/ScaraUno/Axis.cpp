@@ -126,7 +126,12 @@ HOME_STATE Axis::UpdateHoming()
 
 int Axis::Home()
 {
-    return 1;
+   while(_homeState != HOME_STATE_HOMED)
+   {
+      UpdateHoming();
+   }
+
+   return 1;
 }
 
       

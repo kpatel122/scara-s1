@@ -64,14 +64,7 @@ void InitAxis()
   axisController.CreateSyncDriveController();
 }
 
-void HomeAxis(uint8_t axis)
-{
-   while(axisController.pGetAxis(axis)->GetHomingState() != HOME_STATE_HOMED)
-   {
-     axisController.pGetAxis(axis)->UpdateHoming();
-   }
-    
-}
+
 
 void setup() {
 
@@ -80,27 +73,13 @@ void setup() {
   InitAxis();
   InitISR();
 
-  HomeAxis(Z_AXIS);
-  HomeAxis(B_AXIS);
-  HomeAxis(A_AXIS);
-
- 
-   
+axisController.Home(Z_AXIS);
+axisController.Home(B_AXIS);
+axisController.Home(A_AXIS);
 
   int degrees = 90;
   int mm = 10; 
 
-  //axisController.pGetAxis(A_AXIS)->_basicStepperDriver.rotate(degrees);
-  
-  //axisController.pGetAxis(Z_AXIS)->_basicStepperDriver.setRPM(5);
-  //axisController.pGetAxis(Z_AXIS)->Move(mm);
-  //axisController.pGetAxis(A_AXIS)->Move(degrees);
-  //axisController.pGetAxis(B_AXIS)->Move(degrees);
-
-
-  
-  //axisController.pGetAxis(A_AXIS)->_basicStepperDriver.setRPM(50);
-  //axisController.pGetAxis(B_AXIS)->_basicStepperDriver.setRPM(50);
   axisController.Move(mm,degrees,degrees,0);
 
 }

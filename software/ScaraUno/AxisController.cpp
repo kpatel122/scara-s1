@@ -1,5 +1,14 @@
 #include "AxisController.h"
 
+void AxisController::Home(uint8_t axisIndex)
+{
+    _pAxis[axisIndex]->Home();
+}
+void AxisController::Home()
+{
+    /*Home all axis*/
+}
+
 void AxisController::Move(long mmZ,long degreesA,long degreesB,long degreesC)
 {
     
