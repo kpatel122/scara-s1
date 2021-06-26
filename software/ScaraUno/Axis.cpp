@@ -25,8 +25,6 @@ void Axis::TransitionHomingState()
         {
             _basicStepperDriver.stop();
             _homeState = HOME_STATE_HOMED;
-
-            Serial.println("Setting RPM");
             _basicStepperDriver.setRPM(_RPM); //reset regular speed;
             _currentAngle = 0;
             _homed = true;
@@ -40,7 +38,7 @@ void Axis::LimitHit()
     TransitionHomingState();
 }
 
-void Axis::Init(uint8_t homePin, bool invertDir,uint8_t microSteps,uint8_t homeRPM, 
+void Axis::Init(uint8_t homePin, bool invertDir,uint8_t microSteps,float stepsPerDegree, uint8_t homeRPM, 
                uint8_t homeRetractDistance,uint8_t RPM,uint16_t maxDistance, uint16_t acceleration, uint16_t deceleration)
 {
     _homePin = homePin;
@@ -52,7 +50,10 @@ void Axis::Init(uint8_t homePin, bool invertDir,uint8_t microSteps,uint8_t homeR
     _maxDistance = maxDistance;
     _acceleration = acceleration;
     _deceleration = deceleration;
+    _homed=false; 
+    _stepsPerDegree=stepsPerDegree;  
 
+    /* start stepper */
     _basicStepperDriver.begin(homeRPM, microSteps);
     _basicStepperDriver.setEnableActiveState(LOW);
     _basicStepperDriver.enable();

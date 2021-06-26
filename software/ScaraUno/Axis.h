@@ -23,8 +23,7 @@ class Axis
         Axis(uint16_t steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, float stepsPerDegree, uint8_t homePin, bool invertDir,
         uint8_t microSteps, uint8_t homeRPM, uint8_t homeRetractDistance, uint8_t RPM, uint16_t maxDistance, uint16_t acceleration, uint16_t deceleration ) 
         : _basicStepperDriver(steps,dirPin , stepPin, enablePin)
-        {_homed=false; _stepsPerDegree=stepsPerDegree;  Init(homePin, invertDir,microSteps, 
-                                                             homeRPM, homeRetractDistance, RPM,maxDistance,acceleration,deceleration); }
+        {Init(homePin, invertDir,microSteps,stepsPerDegree,homeRPM, homeRetractDistance, RPM,maxDistance,acceleration,deceleration); }
  
         float GetAngle() {return _currentAngle;}
         float GetStepsPerDegree() {return _stepsPerDegree;}
@@ -43,7 +42,7 @@ class Axis
          
         BasicStepperDriver _basicStepperDriver; //should be private but an issue using the getter in sync driver is fixed by making it public
     private:
-        void Init(uint8_t homePin, bool invertDir,uint8_t microSteps, uint8_t homeRPM, 
+        void Init(uint8_t homePin, bool invertDir,uint8_t microSteps,float stepsPerDegree, uint8_t homeRPM, 
         uint8_t homeRetractDistance,uint8_t RPM,uint16_t maxDistance, uint16_t acceleration, uint16_t deceleration);
 
         void TransitionHomingState();

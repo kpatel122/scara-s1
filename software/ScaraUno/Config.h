@@ -23,7 +23,7 @@
 #define A_HOME_RPM 6
 #define B_HOME_RPM 6
 #define C_HOME_RPM 6
-#define Z_HOME_RPM 12
+#define Z_HOME_RPM 20
 
 /* retract distance */
 #define A_RETRACT_DIST 20 //in degrees

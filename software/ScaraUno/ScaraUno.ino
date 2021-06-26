@@ -23,8 +23,6 @@ void pin_ISRB() { axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
 int incomingByte = 0;
 
-
-
 void InitISR()
 {
   pinMode(B_AXIS_LIMIT, INPUT_PULLUP);
@@ -62,15 +60,8 @@ void InitAxis()
                                           C_STEPS_PER_DEGREE,C_AXIS_LIMIT,INVERT_C,C_MICROSTEPS,C_HOME_RPM,C_RETRACT_DIST,C_RPM,
                                           C_MAX_DIST,C_ACCEL,C_DECEL) );
   
- 
-
-
-  //add axis to sync controller
+  //add axis to sync controller, must create axis' before this call
   axisController.CreateSyncDriveController();
-
-
-
-  
 }
 
 void HomeAxis(uint8_t axis)
@@ -89,15 +80,12 @@ void setup() {
   InitAxis();
   InitISR();
 
-  //HomeAxis(Z_AXIS);
+  HomeAxis(Z_AXIS);
   HomeAxis(B_AXIS);
   HomeAxis(A_AXIS);
 
  
-  
-  Serial.print("A_STEPS_PER_DEGREE ");
-  Serial.println(A_STEPS_PER_DEGREE);
-  
+   
 
   int degrees = 90;
   int mm = 10; 
