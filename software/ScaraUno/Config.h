@@ -15,17 +15,50 @@
 
 
 
-#define HOME_FIRST_SEEK_RPM 5 //first pass to home
+//#define HOME_FIRST_SEEK_RPM 5 //first pass to home
 #define HOME_SEEK_DEG -400 
-#define RETRACT_DISTANCE_DEG 10 //distance to retract after first home limit hit, setup for second seek
-#define HOME_SECOND_SEEK_RPM 2 //second slower seek to find final home
-
-
  
+
+/* home RPM */
+#define A_HOME_RPM 6
+#define B_HOME_RPM 6
+#define C_HOME_RPM 6
+#define Z_HOME_RPM 12
+
+/* retract distance */
+#define A_RETRACT_DIST 20 //in degrees
+#define B_RETRACT_DIST 20
+#define C_RETRACT_DIST 20
+#define Z_RETRACT_DIST 5 //in mm
+
+/* normal moving speed */
+#define A_RPM 10
+#define B_RPM 10
+#define C_RPM 10
+#define Z_RPM 16
  
+/* acceleration deceleration*/
+#define A_ACCEL 2000
+#define A_DECEL 2000
+#define B_ACCEL 2000
+#define B_DECEL 2000
+#define C_ACCEL 2000
+#define C_DECEL 2000
+#define Z_ACCEL 2000
+#define Z_DECEL 2000
+
+/*Max distances*/
+#define A_MAX_DIST 180 //in degrees
+#define B_MAX_DIST 180
+#define C_MAX_DIST 180
+#define Z_MAX_DIST 200 //in mm
 
 #define MICROSTEPS 16
-#define RPM 10
+
+#define A_MICROSTEPS MICROSTEPS
+#define B_MICROSTEPS MICROSTEPS
+#define C_MICROSTEPS MICROSTEPS
+#define Z_MICROSTEPS MICROSTEPS
 
 #define ACCL 2000
 #define DECL 2000

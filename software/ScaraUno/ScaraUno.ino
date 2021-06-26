@@ -23,18 +23,7 @@ void pin_ISRB() { axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
 int incomingByte = 0;
 
-void setAxisParameters()
-{
-  for(int i=0; i<4;i++)
-  {
-    
-    axisController.pGetAxis(i)->_basicStepperDriver.begin(RPM, MICROSTEPS);
-    axisController.pGetAxis(i)->_basicStepperDriver.setEnableActiveState(LOW);
-    axisController.pGetAxis(i)->_basicStepperDriver.enable();
-    axisController.pGetAxis(i)->_basicStepperDriver.setSpeedProfile(axisController.pGetAxis(i)->_basicStepperDriver.LINEAR_SPEED,ACCL,DECL);
-  
-  }
-}
+
 
 void InitISR()
 {
@@ -56,16 +45,32 @@ void InitAxis()
 {
 
   //create axis
-  axisController.AddAxis(Z_AXIS, new Axis(Z_STEPS, Z_DIR, Z_STEP,ENABLE_PIN,Z_STEPS_PER_MM,Z_AXIS_LIMIT,INVERT_Z) );
-  axisController.AddAxis(A_AXIS, new Axis(A_STEPS, A_DIR, A_STEP,ENABLE_PIN,A_STEPS_PER_DEGREE,A_AXIS_LIMIT,INVERT_A) );
-  axisController.AddAxis(B_AXIS, new Axis(B_STEPS, B_DIR, B_STEP,ENABLE_PIN,B_STEPS_PER_DEGREE,B_AXIS_LIMIT,INVERT_B) );
-  axisController.AddAxis(C_AXIS, new Axis(C_STEPS, C_DIR, C_STEP,ENABLE_PIN,C_STEPS_PER_DEGREE,C_AXIS_LIMIT,INVERT_C) );
+  axisController.AddAxis(Z_AXIS, new Axis(Z_STEPS, Z_DIR, Z_STEP,ENABLE_PIN,
+                                          Z_STEPS_PER_MM,Z_AXIS_LIMIT,INVERT_Z,Z_MICROSTEPS,Z_HOME_RPM,Z_RETRACT_DIST,Z_RPM,
+                                          Z_MAX_DIST,Z_ACCEL,Z_DECEL) );
   
+  axisController.AddAxis(A_AXIS, new Axis(A_STEPS, A_DIR, A_STEP,ENABLE_PIN,
+                                          A_STEPS_PER_DEGREE,A_AXIS_LIMIT,INVERT_A,A_MICROSTEPS,A_HOME_RPM/2,A_RETRACT_DIST,A_RPM,
+                                          A_MAX_DIST,A_ACCEL,A_DECEL) );
+  
+  axisController.AddAxis(B_AXIS, new Axis(B_STEPS, B_DIR, B_STEP,ENABLE_PIN,
+                                          B_STEPS_PER_DEGREE,B_AXIS_LIMIT,INVERT_B,B_MICROSTEPS,B_HOME_RPM,B_RETRACT_DIST,B_RPM,
+                                          B_MAX_DIST,B_ACCEL,B_DECEL) );
+  
+  
+  axisController.AddAxis(C_AXIS, new Axis(C_STEPS, C_DIR, C_STEP,ENABLE_PIN,
+                                          C_STEPS_PER_DEGREE,C_AXIS_LIMIT,INVERT_C,C_MICROSTEPS,C_HOME_RPM,C_RETRACT_DIST,C_RPM,
+                                          C_MAX_DIST,C_ACCEL,C_DECEL) );
+  
+ 
+
+
   //add axis to sync controller
   axisController.CreateSyncDriveController();
 
-  //set axis parameters
-  setAxisParameters();
+
+
+  
 }
 
 void HomeAxis(uint8_t axis)
@@ -95,7 +100,7 @@ void setup() {
   
 
   int degrees = 90;
-  int mm = 0; 
+  int mm = 10; 
 
   //axisController.pGetAxis(A_AXIS)->_basicStepperDriver.rotate(degrees);
   

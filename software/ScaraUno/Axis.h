@@ -20,11 +20,15 @@ class Axis
 {
     public:
 
-        Axis(uint16_t steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, float stepsPerDegree, uint8_t homePin, bool invertDir ) 
-        : _basicStepperDriver(steps,dirPin , stepPin, enablePin){_homed=false; _stepsPerDegree=stepsPerDegree;  InitHoming(homePin, invertDir);}
+        Axis(uint16_t steps,uint8_t dirPin , uint8_t stepPin, uint8_t enablePin, float stepsPerDegree, uint8_t homePin, bool invertDir,
+        uint8_t microSteps, uint8_t homeRPM, uint8_t homeRetractDistance, uint8_t RPM, uint16_t maxDistance, uint16_t acceleration, uint16_t deceleration ) 
+        : _basicStepperDriver(steps,dirPin , stepPin, enablePin)
+        {_homed=false; _stepsPerDegree=stepsPerDegree;  Init(homePin, invertDir,microSteps, 
+                                                             homeRPM, homeRetractDistance, RPM,maxDistance,acceleration,deceleration); }
  
         float GetAngle() {return _currentAngle;}
         float GetStepsPerDegree() {return _stepsPerDegree;}
+        void SetRPM(float RPM) { _basicStepperDriver.setRPM(RPM);}
         bool IsHomed(){return _homed;}
         bool SetHomed(bool homeStatus){_homed = homeStatus;}
         
@@ -39,7 +43,9 @@ class Axis
          
         BasicStepperDriver _basicStepperDriver; //should be private but an issue using the getter in sync driver is fixed by making it public
     private:
-        void InitHoming(uint8_t homePin, bool invertHomingDir);
+        void Init(uint8_t homePin, bool invertDir,uint8_t microSteps, uint8_t homeRPM, 
+        uint8_t homeRetractDistance,uint8_t RPM,uint16_t maxDistance, uint16_t acceleration, uint16_t deceleration);
+
         void TransitionHomingState();
         float _stepsPerDegree;
         short _homePin;
@@ -48,6 +54,14 @@ class Axis
         bool _homed;
         bool _invertDir;
         volatile HOME_STATE _homeState; //changed from imit switch ISR
+        
+        uint8_t _homeRPM;
+        uint8_t _homeRetractDistance;
+        uint8_t _RPM;
+        uint16_t _maxDistance;
+        uint16_t _acceleration;
+        uint16_t _deceleration;
+        
         
          
 };
