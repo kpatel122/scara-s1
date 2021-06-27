@@ -5,8 +5,11 @@
 #include "Axis.h"
 #include "AxisController.h"
 #include "PinChangeInterrupt.h"
+#include <SoftwareServo.h> 
 
 AxisController axisController;
+
+SoftwareServo myservo;
 
 enum ROBOT_STATE {
   STATE_NOT_HOMED,
@@ -72,18 +75,21 @@ void setup() {
 
   InitAxis();
   InitISR();
+  myservo.attach(A3);
 
 axisController.Home(Z_AXIS);
 axisController.Home(B_AXIS);
 axisController.Home(A_AXIS);
 
-  int degrees = 90;
-  int mm = 10; 
+//int degrees = 90;
+ // int mm = 10; 
 
-  axisController.Move(mm,degrees,degrees,0);
+//  axisController.Move(mm,degrees,degrees,0);
 
 }
 
+
+int dir = 0;
 // the loop function runs over and over again forever
 void loop() {
 
@@ -94,10 +100,31 @@ void loop() {
 
     if(incomingByte == 's')
     {
-      Serial.print("limit status ");
+       int degrees = 10;
+        int mm = 10; 
+
+      axisController.Move(mm,degrees,degrees,0);
+      
+      if(dir == 0)
+      {
+        myservo.write(0);
+        dir = 1;
+      }
+      else if (dir == 1)
+      {
+          myservo.write(180);
+          dir = 0;
+      }
+      
+      //delay(500);
+      //myservo.write(180);
+      
+
+
     }
+    
 
     
   }
-
+  SoftwareServo::refresh();
 }
