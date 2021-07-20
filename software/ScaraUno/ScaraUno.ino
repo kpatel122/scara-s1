@@ -5,11 +5,14 @@
 #include "Axis.h"
 #include "AxisController.h"
 #include "PinChangeInterrupt.h"
-#include <SoftwareServo.h> 
+ #include <ServoSpeed.h>
+ 
+
 
 AxisController axisController;
+CServoSpeed gripperServo;
 
-SoftwareServo myservo;
+
 
 enum ROBOT_STATE {
   STATE_NOT_HOMED,
@@ -18,19 +21,25 @@ enum ROBOT_STATE {
 };
 
 
-void pin_ISRZ() { axisController.pGetAxis(Z_AXIS)->LimitHit(); }
+void pin_ISRZ() { Serial.println("Z"); axisController.pGetAxis(Z_AXIS)->LimitHit(); }
 
-void pin_ISRA() { axisController.pGetAxis(A_AXIS)->LimitHit();}
+void pin_ISRA() { Serial.println("A"); axisController.pGetAxis(A_AXIS)->LimitHit();}
 
-void pin_ISRB() { axisController.pGetAxis(B_AXIS)->LimitHit(); }
+void pin_ISRB() { Serial.println("B"); axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
 int incomingByte = 0;
+
+int servoMin = 90;
+int servoMax = 180;
+int servoSpeed = 14;
+int dir = 0;
 
 void InitISR()
 {
   pinMode(B_AXIS_LIMIT, INPUT_PULLUP);
   pinMode(A_AXIS_LIMIT, INPUT_PULLUP);
-  pinMode(Z_AXIS_LIMIT, INPUT_PULLUP);
+  //pinMode(Z_AXIS_LIMIT, INPUT_PULLUP);
+  
   //todo add c axis
   //pinMode(C_AXIS_LIMIT, INPUT_PULLUP);
   //attachPCINT(digitalPinToPCINT(C_AXIS_LIMIT), pin_ISRC, CHANGE);
@@ -39,7 +48,7 @@ void InitISR()
 
   attachPCINT(digitalPinToPCINT(B_AXIS_LIMIT), pin_ISRB, CHANGE);
   attachPCINT(digitalPinToPCINT(A_AXIS_LIMIT), pin_ISRA, CHANGE);
-  attachPCINT(digitalPinToPCINT(Z_AXIS_LIMIT), pin_ISRZ, CHANGE);
+  //attachPCINT(digitalPinToPCINT(Z_AXIS_LIMIT), pin_ISRZ, CHANGE);
 }
 
 void InitAxis()
@@ -67,19 +76,27 @@ void InitAxis()
   axisController.CreateSyncDriveController();
 }
 
+void InitGripper()
+{
 
+  gripperServo.attach(GRIPPER_PIN,544,2400);
+  gripperServo.setSpeed(servoSpeed);
+
+  dir = 1;
+}
 
 void setup() {
 
   Serial.begin(115200);
 
-  InitAxis();
-  InitISR();
-  myservo.attach(A3);
+  //InitAxis();
+  //InitISR();
+  InitGripper();
+  
 
-axisController.Home(Z_AXIS);
-axisController.Home(B_AXIS);
-axisController.Home(A_AXIS);
+//axisController.Home(Z_AXIS);
+//axisController.Home(B_AXIS);
+//axisController.Home(A_AXIS);
 
 //int degrees = 90;
  // int mm = 10; 
@@ -89,7 +106,8 @@ axisController.Home(A_AXIS);
 }
 
 
-int dir = 0;
+
+
 // the loop function runs over and over again forever
 void loop() {
 
@@ -98,33 +116,76 @@ void loop() {
     // read the incoming byte:
     incomingByte = Serial.read();
 
+    if(incomingByte == 'h' ||  incomingByte == 'g' ||  incomingByte == 'j' )
+    {
+      Serial.print("witing for input ");
+      while(!Serial.available())
+      {
+      }
+
+      int pulse = Serial.parseInt();
+      
+
+
+      if(incomingByte == 'h')
+      {
+        Serial.print("setting max angle ");
+        Serial.println(pulse);
+        //gripperServo.setMaximumPulse(pulse);
+        servoMax = pulse;
+      }
+      
+      if(incomingByte == 'g')
+      {
+        Serial.print("setting min angle ");
+        Serial.println(pulse);
+        //gripperServo.setMinimumPulse(pulse);
+        servoMin = pulse;
+      }
+
+       if(incomingByte == 'j')
+      {
+        Serial.print("setting speed ");
+        Serial.println(pulse);
+        //gripperServo.setMinimumPulse(pulse);
+        servoSpeed = pulse;
+        gripperServo.setSpeed(servoSpeed);
+      }
+
+    }
+
+
     if(incomingByte == 's')
     {
        int degrees = 10;
         int mm = 10; 
 
-      axisController.Move(mm,degrees,degrees,0);
+      //axisController.Move(mm,degrees,degrees,0);
       
       if(dir == 0)
       {
-        myservo.write(0);
+        Serial.print("servoMin ");
+        Serial.println(servoMin);
+        
+        
+        gripperServo.write(servoMin);
+        
         dir = 1;
       }
       else if (dir == 1)
       {
-          myservo.write(180);
+          Serial.print("servoMax ");
+          Serial.println(servoMax);
+          
+           
+          gripperServo.write(servoMax);
+          
           dir = 0;
       }
       
-      //delay(500);
-      //myservo.write(180);
-      
-
-
     }
-    
 
-    
   }
-  SoftwareServo::refresh();
+  gripperServo.update();
+
 }

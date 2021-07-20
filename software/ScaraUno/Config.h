@@ -106,7 +106,7 @@
 
 #define C_STEP  12  //maps to grbl shield 4th axis
 #define C_DIR 13  //Digital Pin 12 for Stepping signal and Digital Pin 13 as direction signal
-#define C_AXIS_LIMIT  0 //need to work this out
+#define C_AXIS_LIMIT  A0 //abort on CNC shield //
 
 //motor steps calculations
 #define A_MOTOR_GEAR_RATIO ((float)20/ (float)130)  //motor pulley / idle pulley
@@ -133,6 +133,9 @@
 #define B_STEPS_PER_DEGREE (float)(1 / ((float)B_MOTOR_GEAR_RATIO * ((float)B_MOTOR_STEP_DEGREE / (float)B_MOTOR_MICROSTEPS)))
 
 #define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE //same ratio
+
+//gripper
+#define GRIPPER_PIN Z_LIMIT //coolent pin on CNC shield
 
 #endif
 
