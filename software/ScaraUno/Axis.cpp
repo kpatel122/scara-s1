@@ -23,6 +23,7 @@ void Axis::TransitionHomingState()
         
         case HOME_STATE_SECOND_SEEK:
         {
+            //homing finished
             _basicStepperDriver.stop();
             _homeState = HOME_STATE_HOMED;
             _basicStepperDriver.setRPM(_RPM); //reset regular speed;

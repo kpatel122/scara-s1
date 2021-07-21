@@ -5,27 +5,72 @@
 #include "Axis.h"
 #include "AxisController.h"
 #include "PinChangeInterrupt.h"
- #include <ServoSpeed.h>
+#include <ServoSpeed.h>
+#include <gcode.h>
  
+void Gcode_g28();
+void Gcode_g1();
 
+
+/*gcode callbacks*/
+#define NUM_GCODE_COMMANDS 2
+commandscallback commands[NUM_GCODE_COMMANDS] = {{"G28",Gcode_g28}, {"G1",Gcode_g1}};
+gcode Commands(NUM_GCODE_COMMANDS,commands);
+
+/*config values*/
+
+#define CONFIG_MAX_SERVO_ANGLE 'h' 
+#define CONFIG_MIN_SERVO_ANGLE 'g'
+#define CONFIG_GRIPPER_SPEED 'j'
+#define GRIPPER_OPEN 's'
+#define GRIPPER_CLOSE 'a'
 
 AxisController axisController;
 CServoSpeed gripperServo;
 
 
 
-enum ROBOT_STATE {
-  STATE_NOT_HOMED,
-  STATE_HOMING,
-  STATE_HOMED
-};
+void Gcode_g28()
+{
+  HomeAxis();
+}
 
+void Gcode_g1()
+{
+  Commands.comment("G1 called");
 
-void pin_ISRZ() { Serial.println("Z"); axisController.pGetAxis(Z_AXIS)->LimitHit(); }
+  double a,b,c,z; //axis values
 
-void pin_ISRA() { Serial.println("A"); axisController.pGetAxis(A_AXIS)->LimitHit();}
+  a = b = c = z = 0;
 
-void pin_ISRB() { Serial.println("B"); axisController.pGetAxis(B_AXIS)->LimitHit(); }
+  if(Commands.availableValue('Z'))
+      z = Commands.GetValue('Z');
+  if(Commands.availableValue('A'))
+      a = Commands.GetValue('A');
+  if(Commands.availableValue('B'))
+      b = Commands.GetValue('B');
+  if(Commands.availableValue('C'))
+      c = Commands.GetValue('C');
+
+  Serial.println("axis values are");
+  Serial.print(" a ");
+  Serial.println(a);
+  Serial.print(" b ");
+  Serial.println(b);
+  Serial.print(" c ");
+  Serial.println(c);
+  Serial.print(" z ");
+  Serial.println(z);
+
+  axisController.Move(z,a,b,c);
+   
+}
+
+void pin_ISRZ() {  axisController.pGetAxis(Z_AXIS)->LimitHit(); }
+
+void pin_ISRA() { axisController.pGetAxis(A_AXIS)->LimitHit();}
+
+void pin_ISRB() {  axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
 int incomingByte = 0;
 
@@ -38,7 +83,7 @@ void InitISR()
 {
   pinMode(B_AXIS_LIMIT, INPUT_PULLUP);
   pinMode(A_AXIS_LIMIT, INPUT_PULLUP);
-  //pinMode(Z_AXIS_LIMIT, INPUT_PULLUP);
+  pinMode(Z_AXIS_LIMIT, INPUT_PULLUP);
   
   //todo add c axis
   //pinMode(C_AXIS_LIMIT, INPUT_PULLUP);
@@ -48,7 +93,7 @@ void InitISR()
 
   attachPCINT(digitalPinToPCINT(B_AXIS_LIMIT), pin_ISRB, CHANGE);
   attachPCINT(digitalPinToPCINT(A_AXIS_LIMIT), pin_ISRA, CHANGE);
-  //attachPCINT(digitalPinToPCINT(Z_AXIS_LIMIT), pin_ISRZ, CHANGE);
+  attachPCINT(digitalPinToPCINT(Z_AXIS_LIMIT), pin_ISRZ, CHANGE);
 }
 
 void InitAxis()
@@ -74,6 +119,9 @@ void InitAxis()
   
   //add axis to sync controller, must create axis' before this call
   axisController.CreateSyncDriveController();
+
+  //attch interrupts
+  InitISR();
 }
 
 void InitGripper()
@@ -85,107 +133,117 @@ void InitGripper()
   dir = 1;
 }
 
+void HomeAxis()
+{
+  axisController.Home(Z_AXIS);
+  axisController.Home(B_AXIS);
+  axisController.Home(A_AXIS);
+}
+
 void setup() {
 
-  Serial.begin(115200);
+  //Serial.begin(115200);
+  Commands.begin(115200,"ok");
+   
 
-  //InitAxis();
-  //InitISR();
+
+  InitAxis();
+
   InitGripper();
   
+  
+  int degrees = 90;
 
-//axisController.Home(Z_AXIS);
-//axisController.Home(B_AXIS);
-//axisController.Home(A_AXIS);
+ // axisController.Move(0,degrees,degrees,0);
 
-//int degrees = 90;
- // int mm = 10; 
-
-//  axisController.Move(mm,degrees,degrees,0);
+  
 
 }
 
+bool IsConfigValue(int value)
+{
+  return (value == CONFIG_MAX_SERVO_ANGLE || value == CONFIG_MIN_SERVO_ANGLE || value == CONFIG_GRIPPER_SPEED);
+
+}
+
+bool IsServoControl(int value)
+{
+  return (value == GRIPPER_OPEN || value == GRIPPER_CLOSE);
+}
+
+void GripperAction(int value)
+{
+  if(incomingByte == GRIPPER_OPEN)
+  {
+    Serial.print("servoMax ");
+    Serial.println(servoMax);
+    gripperServo.write(servoMax);
+  }
+  else if(incomingByte == GRIPPER_CLOSE)
+  {
+    Serial.print("servoMin ");
+    Serial.println(servoMin);
+    gripperServo.write(servoMin);
+  }
+}
+
+void ReadConfig()
+{
+  
+      Serial.print("waiting for input value");
+      while(!Serial.available())
+      {
+      }
+
+      int value = Serial.parseInt();
+      
+      if(incomingByte == CONFIG_MAX_SERVO_ANGLE)
+      {
+        Serial.print("setting max angle ");
+        Serial.println(value);
+        //gripperServo.setMaximumPulse(pulse);
+        servoMax = value;
+      }
+      
+      else if(incomingByte == CONFIG_MIN_SERVO_ANGLE)
+      {
+        Serial.print("setting min angle ");
+        Serial.println(value);
+        //gripperServo.setMinimumPulse(pulse);
+        servoMin = value;
+      }
+
+      else if(incomingByte == CONFIG_GRIPPER_SPEED)
+      {
+        Serial.print("setting speed ");
+        Serial.println(value);
+        //gripperServo.setMinimumPulse(pulse);
+        servoSpeed = value;
+        gripperServo.setSpeed(servoSpeed);
+      }
+
+}
 
 
 
 // the loop function runs over and over again forever
 void loop() {
 
-
+/*
   if (Serial.available() > 0) {
     // read the incoming byte:
     incomingByte = Serial.read();
-
-    if(incomingByte == 'h' ||  incomingByte == 'g' ||  incomingByte == 'j' )
+    if(IsConfigValue(incomingByte))
     {
-      Serial.print("witing for input ");
-      while(!Serial.available())
-      {
-      }
-
-      int pulse = Serial.parseInt();
-      
-
-
-      if(incomingByte == 'h')
-      {
-        Serial.print("setting max angle ");
-        Serial.println(pulse);
-        //gripperServo.setMaximumPulse(pulse);
-        servoMax = pulse;
-      }
-      
-      if(incomingByte == 'g')
-      {
-        Serial.print("setting min angle ");
-        Serial.println(pulse);
-        //gripperServo.setMinimumPulse(pulse);
-        servoMin = pulse;
-      }
-
-       if(incomingByte == 'j')
-      {
-        Serial.print("setting speed ");
-        Serial.println(pulse);
-        //gripperServo.setMinimumPulse(pulse);
-        servoSpeed = pulse;
-        gripperServo.setSpeed(servoSpeed);
-      }
-
+        ReadConfig();
     }
-
-
-    if(incomingByte == 's')
+    if(IsServoControl(incomingByte))
     {
-       int degrees = 10;
-        int mm = 10; 
-
-      //axisController.Move(mm,degrees,degrees,0);
-      
-      if(dir == 0)
-      {
-        Serial.print("servoMin ");
-        Serial.println(servoMin);
-        
-        
-        gripperServo.write(servoMin);
-        
-        dir = 1;
-      }
-      else if (dir == 1)
-      {
-          Serial.print("servoMax ");
-          Serial.println(servoMax);
-          
-           
-          gripperServo.write(servoMax);
-          
-          dir = 0;
-      }
-      
+        GripperAction(incomingByte);
     }
-
   }
-  gripperServo.update();
+  */
+  Commands.available();
+  //gripperServo.update();
 
 }

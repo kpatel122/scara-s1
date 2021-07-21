@@ -26,10 +26,10 @@
 #define Z_HOME_RPM 20
 
 /* retract distance */
-#define A_RETRACT_DIST 20 //in degrees
-#define B_RETRACT_DIST 20
-#define C_RETRACT_DIST 20
-#define Z_RETRACT_DIST 5 //in mm
+#define A_RETRACT_DIST 10 //in degrees
+#define B_RETRACT_DIST 10
+#define C_RETRACT_DIST 10
+#define Z_RETRACT_DIST 3 //in mm
 
 /* normal moving speed */
 #define A_RPM 10
@@ -75,7 +75,14 @@
 //limit switched
 #define X_LIMIT 9 //grbl shield limit switch pins
 #define Y_LIMIT 10
-#define Z_LIMIT 11
+
+#define RESET_ABORT_SHIELD_PIN A0
+#define Z_LIMIT RESET_ABORT_SHIELD_PIN
+
+#define Z_LIMIT_SHIELD_PIN 11 
+ 
+//gripper
+#define GRIPPER_PIN Z_LIMIT_SHIELD_PIN //Z limit on CNC shield used for gripper because it is PWM
 
 #define INVERT_Z 0 //0 for no inverse, 1 for invert
 #define INVERT_A 0
@@ -134,8 +141,7 @@
 
 #define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE //same ratio
 
-//gripper
-#define GRIPPER_PIN Z_LIMIT //coolent pin on CNC shield
+
 
 #endif
 
