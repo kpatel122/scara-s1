@@ -8,13 +8,30 @@
 #include <ServoSpeed.h>
 #include <gcode.h>
  
-void Gcode_g28();
-void Gcode_g1();
+void Gcode_g28(); //home
+void Gcode_g1();  //joint move
 
+void Gcode_e0();  //end effector close
+void Gcode_e1();  //end effector open
+void Gcode_e2();  //end effector speed
+
+void Gcode_d0();  //demo
 
 /*gcode callbacks*/
-#define NUM_GCODE_COMMANDS 2
-commandscallback commands[NUM_GCODE_COMMANDS] = {{"G28",Gcode_g28}, {"G1",Gcode_g1}};
+#define NUM_GCODE_COMMANDS 6
+/*
+G-Code reference
+
+G28- Home all axis
+G1 [a, b,c,z] [value]- Move axis 
+
+E0- Close gripper
+E1- Open Gripper
+E2 [s] [value]- gripper speed, default 14
+
+D0- demo mode
+*/
+commandscallback commands[NUM_GCODE_COMMANDS] = {{"G28",Gcode_g28}, {"G1",Gcode_g1},{"E0",Gcode_e0}, {"E1",Gcode_e1},{"E2",Gcode_e2},{"D0",Gcode_d0}};
 gcode Commands(NUM_GCODE_COMMANDS,commands);
 
 /*config values*/
@@ -28,11 +45,33 @@ gcode Commands(NUM_GCODE_COMMANDS,commands);
 AxisController axisController;
 CServoSpeed gripperServo;
 
+int incomingByte = 0;
 
+int servoMin = 90;
+int servoMax = 180;
+int servoSpeed = 14;
+int dir = 0;
+
+
+void Gcode_d0()
+{
+  //demo
+  HomeAxis();
+  Serial.println("GOT HERE");
+  axisController.Move(15,90,90,0);
+  axisController.Move(0,0,0,90);
+  delay(3000);
+  Gcode_e0();
+  delay(1500);
+  Gcode_e1();
+  
+
+}
 
 void Gcode_g28()
 {
   HomeAxis();
+
 }
 
 void Gcode_g1()
@@ -66,34 +105,53 @@ void Gcode_g1()
    
 }
 
+void Gcode_e0()
+{
+  Serial.println("gripper close");
+  gripperServo.write(servoMax); //close gripper
+}
+void Gcode_e1()
+{
+  
+
+  Serial.println("gripper open");
+  gripperServo.write(servoMin); //open gripper
+}
+void Gcode_e2()
+{
+  int s = servoSpeed; //axis values
+ 
+  if(Commands.availableValue('S'))
+  {
+      s = Commands.GetValue('S');
+      servoSpeed = s;
+      gripperServo.setSpeed(servoSpeed);
+  }
+
+}
+
+
 void pin_ISRZ() {  axisController.pGetAxis(Z_AXIS)->LimitHit(); }
 
 void pin_ISRA() { axisController.pGetAxis(A_AXIS)->LimitHit();}
 
 void pin_ISRB() {  axisController.pGetAxis(B_AXIS)->LimitHit(); }
 
-int incomingByte = 0;
+void pin_ISRC() {  axisController.pGetAxis(C_AXIS)->LimitHit(); }
 
-int servoMin = 90;
-int servoMax = 180;
-int servoSpeed = 14;
-int dir = 0;
+
 
 void InitISR()
 {
   pinMode(B_AXIS_LIMIT, INPUT_PULLUP);
   pinMode(A_AXIS_LIMIT, INPUT_PULLUP);
   pinMode(Z_AXIS_LIMIT, INPUT_PULLUP);
-  
-  //todo add c axis
-  //pinMode(C_AXIS_LIMIT, INPUT_PULLUP);
-  //attachPCINT(digitalPinToPCINT(C_AXIS_LIMIT), pin_ISRC, CHANGE);
- 
-
+  pinMode(C_AXIS_LIMIT, INPUT_PULLUP);
 
   attachPCINT(digitalPinToPCINT(B_AXIS_LIMIT), pin_ISRB, CHANGE);
   attachPCINT(digitalPinToPCINT(A_AXIS_LIMIT), pin_ISRA, CHANGE);
   attachPCINT(digitalPinToPCINT(Z_AXIS_LIMIT), pin_ISRZ, CHANGE);
+  attachPCINT(digitalPinToPCINT(C_AXIS_LIMIT), pin_ISRC, CHANGE);
 }
 
 void InitAxis()
@@ -135,29 +193,21 @@ void InitGripper()
 
 void HomeAxis()
 {
+  axisController.Home(C_AXIS);
   axisController.Home(Z_AXIS);
   axisController.Home(B_AXIS);
   axisController.Home(A_AXIS);
+  
 }
 
-void setup() {
+void setup() 
+{
 
-  //Serial.begin(115200);
   Commands.begin(115200,"ok");
-   
-
-
+  
   InitAxis();
 
   InitGripper();
-  
-  
-  int degrees = 90;
-
- // axisController.Move(0,degrees,degrees,0);
-
-  
-
 }
 
 bool IsConfigValue(int value)
@@ -244,6 +294,6 @@ void loop() {
   }
   */
   Commands.available();
-  //gripperServo.update();
+  gripperServo.update();
 
 }

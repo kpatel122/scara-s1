@@ -13,7 +13,11 @@
  
 #define NUM_AXIS 4
 
-
+//axis indexs
+#define Z_AXIS 0
+#define A_AXIS 1
+#define B_AXIS 2
+#define C_AXIS 3
 
 //#define HOME_FIRST_SEEK_RPM 5 //first pass to home
 #define HOME_SEEK_DEG -400 
@@ -63,33 +67,11 @@
 #define ACCL 2000
 #define DECL 2000
 
+/******** GRBL SHIELD PINS ************************/
 //pins for uno, taken from GRBL shield
 #define ENABLE_PIN 8
 
-//map grbl pins to joints
-#define Z_AXIS 0
-#define A_AXIS 1
-#define B_AXIS 2
-#define C_AXIS 3
-
-//limit switched
-#define X_LIMIT 9 //grbl shield limit switch pins
-#define Y_LIMIT 10
-
-#define RESET_ABORT_SHIELD_PIN A0
-#define Z_LIMIT RESET_ABORT_SHIELD_PIN
-
-#define Z_LIMIT_SHIELD_PIN 11 
- 
-//gripper
-#define GRIPPER_PIN Z_LIMIT_SHIELD_PIN //Z limit on CNC shield used for gripper because it is PWM
-
-#define INVERT_Z 0 //0 for no inverse, 1 for invert
-#define INVERT_A 0
-#define INVERT_B 0
-#define INVERT_C 0
-
-
+//motor pins 
 #define X_STEP_BIT      2  // Uno Digital Pin 2 as defined by grbl cnc shield
 #define Y_STEP_BIT      3  // Uno Digital Pin 3
 #define Z_STEP_BIT      4  // Uno Digital Pin 4
@@ -98,10 +80,27 @@
 #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
 #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
 
+//limit switched
+#define X_LIMIT 9 //grbl shield limit switch pins
+#define Y_LIMIT 10
+#define Z_LIMIT 11
+
+#define RESET_ABORT_SHIELD_PIN A0
+#define FEED_HOLD_SHIELD_PIN A1
+/********************************/
+
+//gripper
+#define GRIPPER_PIN Z_LIMIT //Z limit on CNC shield used for gripper because it is PWM
+
+#define INVERT_Z 0 //0 for no inverse, 1 for invert
+#define INVERT_A 0
+#define INVERT_B 0
+#define INVERT_C 1
+
 //maps stepper pin entry to grbl cnc shield pins
 #define Z_STEP X_STEP_BIT   
 #define Z_DIR  X_DIRECTION_BIT
-#define Z_AXIS_LIMIT  Z_LIMIT //this is where the Z limit pin goes on the shield
+#define Z_AXIS_LIMIT  RESET_ABORT_SHIELD_PIN //this is where the Z limit pin goes on the shield, z limit is used as gripper as it's PWM.
 
 #define A_STEP Y_STEP_BIT   //maps to grbl y-axis
 #define A_DIR  Y_DIRECTION_BIT
@@ -113,7 +112,7 @@
 
 #define C_STEP  12  //maps to grbl shield 4th axis
 #define C_DIR 13  //Digital Pin 12 for Stepping signal and Digital Pin 13 as direction signal
-#define C_AXIS_LIMIT  A0 //abort on CNC shield //
+#define C_AXIS_LIMIT  FEED_HOLD_SHIELD_PIN
 
 //motor steps calculations
 #define A_MOTOR_GEAR_RATIO ((float)20/ (float)130)  //motor pulley / idle pulley
@@ -140,8 +139,6 @@
 #define B_STEPS_PER_DEGREE (float)(1 / ((float)B_MOTOR_GEAR_RATIO * ((float)B_MOTOR_STEP_DEGREE / (float)B_MOTOR_MICROSTEPS)))
 
 #define C_STEPS_PER_DEGREE B_STEPS_PER_DEGREE //same ratio
-
-
 
 #endif
 
