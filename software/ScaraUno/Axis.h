@@ -12,7 +12,9 @@ enum HOME_STATE
     HOME_STATE_RETRACT, //retract after first hit
     HOME_STATE_SECOND_SEEK,  //second pass 
     HOME_STATE_HOMED,   //finished homing
-    HOME_STATE_ERROR // something went wrong
+    HOME_STATE_ERROR, // something went wrong
+    HOME_STATE_REHOME // ready to be re-homed again
+    
 };
 
 //single axis
@@ -26,7 +28,11 @@ class Axis
         {Init(homePin, invertDir,microSteps,stepsPerDegree,homeRPM, homeRetractDistance, RPM,maxDistance,acceleration,deceleration); }
  
         float GetAngle() {return _currentAngle;}
+        float SetAngleAbs(float angle) { _currentAngle = angle; } //absolute angle
+        float SetAngleInc(float angle) { _currentAngle += angle; } //incremental angle
+
         float GetStepsPerDegree() {return _stepsPerDegree;}
+
         void SetRPM(float RPM) { _basicStepperDriver.setRPM(RPM);}
         bool IsHomed(){return _homed;}
         bool SetHomed(bool homeStatus){_homed = homeStatus;}

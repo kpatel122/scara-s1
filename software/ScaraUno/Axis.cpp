@@ -65,6 +65,7 @@ HOME_STATE Axis::UpdateHoming()
 {
     switch(_homeState)
     {
+        case HOME_STATE_REHOME:
         case HOME_STATE_NOT_HOMED: 
         {
             _homeState = HOME_STATE_FIRST_SEEK;
@@ -120,9 +121,14 @@ HOME_STATE Axis::UpdateHoming()
 
 int Axis::Home()
 {
+   if(_homeState == HOME_STATE_HOMED && _currentAngle !=0)// user has homed once already and wants to rehome
+   {
+       _homeState = HOME_STATE_REHOME;
+   }  
    while(_homeState != HOME_STATE_HOMED)
    {
       UpdateHoming();
+       
    }
 
    return 1;
