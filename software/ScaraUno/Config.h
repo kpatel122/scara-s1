@@ -23,11 +23,13 @@
 #define HOME_SEEK_DEG -400 
  
 
-/* home RPM */
-#define A_HOME_RPM 6
-#define B_HOME_RPM 6
-#define C_HOME_RPM 6
-#define Z_HOME_RPM 20
+/* home RPM FIRST SEEK */
+#define A_HOME_RPM 6*2
+#define B_HOME_RPM 6*2
+#define C_HOME_RPM 6*2
+#define Z_HOME_RPM 40
+
+
 
 /* retract distance */
 #define A_RETRACT_DIST 10 //in degrees
@@ -39,7 +41,7 @@
 #define A_RPM 10
 #define B_RPM 10
 #define C_RPM 10
-#define Z_RPM 16
+#define Z_RPM 35
  
 /* acceleration deceleration*/
 #define A_ACCEL 2000

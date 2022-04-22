@@ -92,7 +92,7 @@ HOME_STATE Axis::UpdateHoming()
                    
                   _homeState = HOME_STATE_SECOND_SEEK;
                   Serial.println("Seek Finished!");
-                  _basicStepperDriver.setRPM(_homeRPM /2);
+                  _basicStepperDriver.setRPM(_homeRPM /3);
                   
                   //_invertDir ? _basicStepperDriver.rotate(-HOME_SEEK_DEG) : _basicStepperDriver.rotate(HOME_SEEK_DEG);//move back toward the limit switch slowly
                     _invertDir ? Move(-HOME_SEEK_DEG) : Move(HOME_SEEK_DEG);

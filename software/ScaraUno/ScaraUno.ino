@@ -16,9 +16,10 @@ void Gcode_e1();  //end effector open
 void Gcode_e2();  //end effector speed
 
 void Gcode_d0();  //demo
+void GetPosition();
 
 /*gcode callbacks*/
-#define NUM_GCODE_COMMANDS 6
+#define NUM_GCODE_COMMANDS 7
 /*
 G-Code reference
 
@@ -31,7 +32,7 @@ E2 [s] [value]- gripper speed, default 14
 
 D0- demo mode
 */
-commandscallback commands[NUM_GCODE_COMMANDS] = {{"G28",Gcode_g28}, {"G1",Gcode_g1},{"E0",Gcode_e0}, {"E1",Gcode_e1},{"E2",Gcode_e2},{"D0",Gcode_d0}};
+commandscallback commands[NUM_GCODE_COMMANDS] = {{"G28",Gcode_g28}, {"G1",Gcode_g1},{"E0",Gcode_e0}, {"E1",Gcode_e1},{"E2",Gcode_e2},{"D0",Gcode_d0}, {"M114", GetPosition}};
 gcode Commands(NUM_GCODE_COMMANDS,commands);
 
 /*config values*/
@@ -52,19 +53,87 @@ int servoMax = 180;
 int servoSpeed = 14;
 int dir = 0;
 
+unsigned long period = 2000;
+unsigned long time_now = 0;
+
+void PickAndPlace()
+{
+
+
+  
+ 
+  //move 1
+  axisController.Move(0,-45,0,0);
+  axisController.Move(-30,0,0,0);
+  Gcode_e0();
+time_now = millis();
+ while(1)
+  {
+   if(millis() >= time_now + period){
+        time_now += period;
+        Serial.println("Hello");
+        break;
+    }
+    else
+    {
+      gripperServo.update();
+    }
+  }
+  
+
+
+  axisController.Move(30,0,0,0);
+  axisController.Move(0,70,0,0);
+  
+  Gcode_e1();
+ time_now = millis();
+  while(1)
+  {
+   if(millis() >= time_now + period){
+        time_now += period;
+        Serial.println("Hello");
+        break;
+    }
+    else
+    {
+      gripperServo.update();
+    }
+  }
+
+   axisController.Move(0,-30,0,0);
+
+    
+
+}
+
+void GetPosition()
+{
+  Serial.print("Z:");
+  Serial.print(axisController.pGetAxis(Z_AXIS)->GetAngle());
+  Serial.print("mm A:");
+  Serial.print(axisController.pGetAxis(A_AXIS)->GetAngle());
+  Serial.print("deg B:");
+  Serial.print(axisController.pGetAxis(B_AXIS)->GetAngle());
+  Serial.print("deg C:");
+  Serial.print(axisController.pGetAxis(C_AXIS)->GetAngle());
+  
+}
 
 void Gcode_d0()
 {
   //demo
   HomeAxis();
-  Serial.println("GOT HERE");
-  axisController.Move(15,90,90,0);
-  axisController.Move(0,0,0,90);
+ 
+  axisController.Move(30,0,0,0);
+  PickAndPlace();
+  
+  
+  /*
   delay(3000);
   Gcode_e0();
   delay(1500);
   Gcode_e1();
-  
+  */
 
 }
 
@@ -100,21 +169,23 @@ void Gcode_g1()
   Serial.println(c);
   Serial.print(" z ");
   Serial.println(z);
-
+   
+  //keep b and c in sync 
+  c = c + b; 
   axisController.Move(z,a,b,c);
    
 }
 
 void Gcode_e0()
 {
-  Serial.println("gripper close");
+  //Serial.println("gripper close");
   gripperServo.write(servoMax); //close gripper
 }
 void Gcode_e1()
 {
   
 
-  Serial.println("gripper open");
+  //Serial.println("gripper open");
   gripperServo.write(servoMin); //open gripper
 }
 void Gcode_e2()
@@ -193,10 +264,16 @@ void InitGripper()
 
 void HomeAxis()
 {
-  axisController.Home(C_AXIS);
-  axisController.Home(Z_AXIS);
-  axisController.Home(B_AXIS);
   axisController.Home(A_AXIS);
+  axisController.Move(0,90,0,0);
+  axisController.Home(C_AXIS);
+  axisController.Move(0,0,0,90);
+  axisController.Home(B_AXIS);
+  axisController.Move(0,0,90,0);
+  axisController.Home(Z_AXIS);
+  axisController.Move(20,0,0,0);
+  
+  
   
 }
 
