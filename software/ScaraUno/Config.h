@@ -4,10 +4,6 @@
 #define STEPPER_ENABLE LOW //GRBL use active low
 #define STEPPER_DISABLE HIGH  
 
-
-
-
-
 #ifdef ARDUINO_AVR_UNO || ARDUINO_AVR_MEGA2560 
 #pragma message ("Using Board Arduino Uno or Mega" )
  
@@ -117,21 +113,21 @@
 #define C_AXIS_LIMIT  FEED_HOLD_SHIELD_PIN
 
 //motor steps calculations
-#define A_MOTOR_GEAR_RATIO ((float)20/ (float)130)  //motor pulley / idle pulley
+#define A_MOTOR_GEAR_RATIO ((float)20/ (float)130)  //motor pulley teeth / big pulley teeth
 #define A_MOTOR_MICROSTEPS 16
 #define A_MOTOR_STEP_DEGREE 1.8
 
-#define B_MOTOR_GEAR_RATIO ((float)16/ (float)60)  //C has same ratio
+#define B_MOTOR_GEAR_RATIO ((float)16/ (float)60)  //motor pulley teeth/ pulley teeth note- C has same ratio
 #define B_MOTOR_MICROSTEPS 16
 #define B_MOTOR_STEP_DEGREE ((float)1.8)
 
 
-#define Z_STEPS_PER_MM 400
+#define Z_STEPS_PER_MM 400 //based off lead screw pitch
 
 //how many steps needed for a full revolution
 #define Z_STEPS Z_STEPS_PER_MM
-#define A_STEPS ((float)(200 / (float)A_MOTOR_GEAR_RATIO))//(360 * A_STEPS_PER_DEGREE)
-#define B_STEPS ((float)(200 / (float)B_MOTOR_GEAR_RATIO)) //(360 * B_STEPS_PER_DEGREE)
+#define A_STEPS ((float)(200 / (float)A_MOTOR_GEAR_RATIO))//200 = number of steps for full revolution based on steps per degree i.e. 360 / 1.8 = 200
+#define B_STEPS ((float)(200 / (float)B_MOTOR_GEAR_RATIO))  
 #define C_STEPS B_STEPS
 
 

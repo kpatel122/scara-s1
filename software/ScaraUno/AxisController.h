@@ -5,6 +5,7 @@
 #include "SyncDriver.h"
 #include "Axis.h"
 
+/*all axis container class*/
 class AxisController
 {
     public:
@@ -20,7 +21,7 @@ class AxisController
         
 
     private:
-        Axis* _pAxis[4];
+        Axis* _pAxis[4]; //max 4 axks is supported
         SyncDriver *_pSyncDriveController;
 };
 

@@ -17,7 +17,7 @@ enum HOME_STATE
     
 };
 
-//single axis
+//single axis controller
 class Axis
 {
     public:
