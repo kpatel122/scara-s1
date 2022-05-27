@@ -1,5 +1,13 @@
 
-4 axis Scara robotic arm project
+4 Axis Scara robotic arm project
+
+ifdef::env-github[]
+image:https://img.youtube.com/vi/YHv5_58WSNg/maxresdefault.jpg[link=https://youtu.be/YHv5_58WSNg]
+endif::[]
+
+ifndef::env-github[]
+video::YHv5_58WSNg[youtube]
+endif::[]
 
 
 Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
