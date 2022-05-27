@@ -1,8 +1,7 @@
 
 4 Axis Scara robotic arm project
 
-[![Watch the video](https://img.youtube.com/vi/nTQUwghvy5Q/default.jpg)](https://youtu.be/YHv5_58WSNg)
-
+[![Alt text](https://img.youtube.com/vi/YHv5_58WSNg/0.jpg)](https://www.youtube.com/watch?v=YHv5_58WSNg)
 
 Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
