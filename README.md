@@ -1,5 +1,5 @@
-#scara-s1
-scara arm robotics project
+
+4 axis Scara robotic arm project
 
 
 Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
