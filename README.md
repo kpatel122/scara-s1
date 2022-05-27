@@ -1,5 +1,5 @@
 
-4 Axis Scara robotic arm project
+4 Axis SCARA robotic arm project
 
 [![Alt text](https://img.youtube.com/vi/YHv5_58WSNg/0.jpg)](https://www.youtube.com/watch?v=YHv5_58WSNg)
 
